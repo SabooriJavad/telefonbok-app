@@ -35,3 +35,34 @@ userRouter.post('/register', async (req, res) => {
         res.status(500).send('Server error during registeration');
     }
 });
+
+
+userRouter.post('/login', async (req, res) => {
+    try {
+        const { username, password } = req.body;
+        
+        const user = await UserModel.findOne({ username });
+
+        if (!user) {
+            res.status(400).send('Invalid user');
+
+        }
+
+        const validPassword = await bcrypt.compare(password, user.password);
+        if (!validPassword) {
+            res.status(400).send('Invalid user');
+        }
+        const userId = user._id?.toString();
+        
+        const token = jwt.sign(
+            { username, userId },
+            process.env.JWT_SECRET,
+            { expiresIn: '10' }
+        );
+
+        res.send({ token });
+    } catch (err) {
+        console.error('Lohgin error', err),
+            res.status(500).send('Server error during login');
+     }
+})
