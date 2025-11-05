@@ -1,7 +1,7 @@
 const userName = document.getElementById('username');
 const password = document.getElementById('password');
 const login = document.getElementById('loginBtn');
-import { apiLogin } from "./api";
+import { apiLogin } from "./utils/api";
 
 login.addEventListener('click', async () => {
     const user = userName.value;
@@ -16,9 +16,9 @@ login.addEventListener('click', async () => {
         if (data && data.token) {
            
             alert('Login successfull');
+            window.location.href='/contact.html'
 
             console.log('User logged in :', data);
             
         }
-    
 });

@@ -6,7 +6,7 @@ export const contactRouter = Router();
 
 
 
-contactRouter.post('/', async (req, res) => {
+contactRouter.post('/create', async (req, res) => {
     try {
        
         const contact = await ContactModel.create(req.body);
@@ -25,7 +25,7 @@ contactRouter.get('/', async (req, res) => {
     }
 
 });
-contactRouter.get('/:username', async (req, res) => {
+contactRouter.get('/:name', async (req, res) => {
     try {
         const { username } = req.params;
         const contacts = await ContactModel.find({username});

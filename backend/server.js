@@ -15,11 +15,6 @@ app.use('/User', userRouter);
 app.use('/Contacts', contactRouter);
 
 
-
-
-
-
-
 app.get('/', (req, res) => {
     res.send('Server  is running')
 });
