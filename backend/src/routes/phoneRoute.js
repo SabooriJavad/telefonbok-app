@@ -1,7 +1,7 @@
 import { Router } from "express";
 import fetch from 'node-fetch';
 
-const phoneRouter = Router();
+export const phoneRouter = Router();
 
 phoneRouter.post('/send-sms', async (req, res) => {
   const { to, message } = req.body;
@@ -20,14 +20,12 @@ phoneRouter.post('/send-sms', async (req, res) => {
       },
       body
     });
-
-    // Försök parse JSON, men fallback till text om det inte går
     let result;
     const text = await response.text();
     try {
       result = JSON.parse(text);
     } catch {
-      result = { message: text }; // returnera som text
+      result = { message: text }; 
     }
 
     res.json(result);
@@ -37,4 +35,4 @@ phoneRouter.post('/send-sms', async (req, res) => {
   }
 });
 
-export { phoneRouter };
+
