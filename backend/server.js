@@ -4,6 +4,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { userRouter } from './src/routes/userRoute.js';
 import { contactRouter } from './src/routes/contactRoute.js';
+import { phoneRouter } from './src/routes/phoneRoute.js';
 
 dotenv.config();
 
@@ -13,7 +14,7 @@ app.use(cors());
 app.use(express.json());
 app.use('/User', userRouter);
 app.use('/Contacts', contactRouter);
-
+app.use('/phone', phoneRouter)
 
 app.get('/', (req, res) => {
     res.send('Server  is running')
