@@ -1,9 +1,9 @@
 import mongoose from 'mongoose';
 
 const contactSchema = new mongoose.Schema({
-    name: { type: String, required: true, unique: true },
+    name: { type: String, required: true },
     phone: { type: String, required: true },
-    lastname: { type: String, required: true, unique: true },
+    lastname: { type: String, required: true},
     
     
 
