@@ -7,17 +7,21 @@
   </head>
   <body>
     <h1>Create-contact</h1>
-    <form id="contactForm">
-      <label for="create"></label>
-      <input type="name" id="name" placeholder="Name" /><br /><br />
-      <label for="lasname"></label>
-      <input type="lastnaem" id="lastname" placeholder="Lastname" /><br /><br />
-      <label for="phone"></label>
-      <input type="phone" id="phone" placeholder="Phone" /><br />
-      <br />
-      <button type="submit">Create</button>
-    </form>
-    <ul id="contacList"></ul>
+
+    <label for="create"></label>
+    <input type="name" id="name" placeholder="Name" /><br /><br />
+    <label for="lasname"></label>
+    <input type="lastname" id="lastname" placeholder="Lastname" /><br /><br />
+    <label for="phone"></label>
+    <input type="phone" id="phone" placeholder="Phone" /><br />
+    <br />
+    <button type="button" id="button">Add Contact</button>
+    <button type="button" onClick="window.location.href='index.html'">
+      Log out
+    </button>
+
+    <ul id="contactList"></ul>
+
     <script type="module" src="/src/contact.js"></script>
   </body>
 </html>
