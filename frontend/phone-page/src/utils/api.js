@@ -22,25 +22,33 @@ export async function apiRegister(username, email, password) {
     }
 }
 
-export async function apiLogin(username,password) {
- 
+
+
+export async function apiLogin(username, password) {
     try {
         const res = await fetch(`${API_URL}/User/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body:JSON.stringify({username,password})
+            body: JSON.stringify({ username, password })
         });
-        if (!res.ok) { throw new Error('invalid username'); }
-        
+
+        if (!res.ok) {
+            const err = await res.json();
+            throw new Error(err.message || 'Invalid username or password');
+        }
+
         const data = await res.json();
 
+        // Spara token korrekt i localStorage
         localStorage.setItem('token', data.token);
-        localStorage.setItem('login','true');
+        localStorage.setItem('login', 'true');
 
+        console.log('Token saved:', data.token); // kontrollera token
         return data;
-        
+
     } catch (err) {
-        alert('Invalid username');
+        console.error('Login failed:', err);
+        alert(err.message);
+        return null;
     }
-   
 }
