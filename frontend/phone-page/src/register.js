@@ -23,7 +23,7 @@ button.addEventListener('click', async (e) => {
     try {
         const data = await apiRegister(user, email, pwd);
         
-        alert('User creater successfull');
+        alert('User created successfull');
         window.location.href = '/index.html'
     } catch (err) {
         alert('Registration failed. Please try again.');
