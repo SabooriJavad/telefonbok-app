@@ -1,34 +1,28 @@
 
 import { Router } from 'express';
 import { ContactModel } from '../models/contact-model.js';
+import { authMiddleware } from '../middlewares/auth-middleswares.js';
 
 export const contactRouter = Router();
 
 
 
-contactRouter.post('/create', async (req, res) => {
+contactRouter.post('/create', authMiddleware, async (req, res) => {
     try {
-       
-        const contact = await ContactModel.create(req.body);
+        const { name, lastname, phone } = req.body;
+        const userId = req.user.userId; 
+
+
+        const contact = await ContactModel.create({ name, lastname, phone, userId });
         res.status(201).json(contact);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 });
 
-contactRouter.get('/', async (req, res) => {
+contactRouter.get('/',authMiddleware, async (req, res) => {
     try {
-        const contacts = await ContactModel.find();
-        res.json(contacts);
-    } catch (err) {
-        res.status(500).json({ err: 'Failed to fetch contacts' });
-    }
-
-});
-contactRouter.get('/:name', async (req, res) => {
-    try {
-        const { username } = req.params;
-        const contacts = await ContactModel.find({username});
+        const contacts = await ContactModel.find({userId:req.user.userId});
         res.json(contacts);
     } catch (err) {
         res.status(500).json({ err: 'Failed to fetch contacts' });
@@ -36,10 +30,24 @@ contactRouter.get('/:name', async (req, res) => {
 
 });
 
-contactRouter.put('/:id', async (req, res) => {
+// contactRouter.get('/:name', authMiddleware, async (req, res) => {
+//     try {
+//         const { name } = req.params;
+//         const contacts = await ContactModel.find({ name, userId: req.user.userId });
+//         res.json(contacts);
+//     } catch (err) {
+//         res.status(500).json({ err: 'Failed to fetch contacts' });
+//     }
+// });
+
+
+contactRouter.put('/:id',authMiddleware, async (req, res) => {
 
     try {
-        const updated = await ContactModel.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        const updated = await ContactModel.findByIdAndUpdate(
+            { _id: req.params.id, userId: req.user.userId },
+            req.body,
+            { new: true });
         
         if (!updated) {
            return res.status(404).json({ error: 'Contact not found' });
@@ -50,15 +58,26 @@ contactRouter.put('/:id', async (req, res) => {
     }
 });
 
-contactRouter.delete('/:id', async (req, res) => {
-    try {
-        const deleted = await ContactModel.findByIdAndDelete(req.params.id);
+contactRouter.delete('/:id', authMiddleware, async (req, res) => {
+  try {
+    const contactId = req.params.id;
+    const userId = req.user.userId; // hämtar userId från token
 
-        if (!deleted) {
-            return res.status(404).json({ error: 'contact not found' });
-        }
-        res.json({ message: 'Contact deleted' });
-    } catch (err) {
-        res.status(500).json({ error: 'Failed to delete contact' });
+    console.log('Trying to delete contact:', contactId, 'for user:', userId);
+
+    // Hitta först kontakten
+    const contact = await ContactModel.findOne({ _id: contactId, userId });
+
+    if (!contact) {
+      return res.status(404).json({ error: 'Contact not found or you do not have permission' });
     }
+
+    // Radera kontakten
+    await ContactModel.deleteOne({ _id: contactId, userId });
+    res.json({ message: 'Contact deleted' });
+
+  } catch (err) {
+    console.error('Delete contact error:', err);
+    res.status(500).json({ error: 'Failed to delete contact' });
+  }
 });
